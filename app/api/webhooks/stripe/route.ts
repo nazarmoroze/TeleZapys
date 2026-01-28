@@ -20,9 +20,6 @@ const supabase = createClient(
   { auth: { persistSession: false } }
 );
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
 const resolveTier = (subscription: Stripe.Subscription) => {
   const price = subscription.items.data[0]?.price;
   return price?.lookup_key || price?.metadata?.tier || "free";
