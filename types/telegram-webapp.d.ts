@@ -25,6 +25,7 @@ declare global {
     ready: () => void;
     expand: () => void;
     enableClosingConfirmation: () => void;
+    close?: () => void;
     openLink: (url: string) => void;
     showAlert?: (message: string) => void;
     HapticFeedback?: {
