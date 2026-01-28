@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overscroll-behavior: none;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --tg-theme-bg-color: var(--background);
+  --tg-theme-text-color: var(--foreground);
+  --tg-theme-hint-color: #64748b;
+  --tg-theme-link-color: #2563eb;
+  --tg-theme-button-color: #2ea6ff;
+  --tg-theme-button-text-color: #ffffff;
+  --app-header-height: 56px;
+  --font-mono-stack: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+@theme inline {
+  --color-background: var(--tg-theme-bg-color, var(--background));
+  --color-foreground: var(--tg-theme-text-color, var(--foreground));
+  --font-sans: var(--font-montserrat);
+  --font-mono: var(--font-mono-stack);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--tg-theme-bg-color, var(--background));
+  color: var(--tg-theme-text-color, var(--foreground));
+  font-family: var(--font-montserrat), system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.scroll-area {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  scroll-padding-top: calc(
+    var(--app-header-height) + env(safe-area-inset-top, 0px) + 16px
+  );
+  scroll-padding-bottom: calc(
+    var(--app-bottom-nav-height, 72px) + env(safe-area-inset-bottom, 0px) + 16px
+  );
+}
+
+.calendar-fixed {
+  overscroll-behavior: none;
+  touch-action: pan-x;
+}
+
+.week-swipe {
+  transition: transform 220ms ease;
+}
+
+.week-swipe--in-left {
+  transform: translateX(-12px);
+}
+
+.week-swipe--in-right {
+  transform: translateX(12px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
