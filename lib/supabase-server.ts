@@ -12,8 +12,8 @@ const getEnv = (key: string) => {
   return value;
 };
 
-export const createServerSupabaseClient = () => {
-  const cookieStore = cookies();
+export const createServerSupabaseClient = async () => {
+  const cookieStore = await cookies();
 
   return createServerClient(
     getEnv("NEXT_PUBLIC_SUPABASE_URL"),

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import WindowControlsBar from "@/components/telegram/WindowControlsBar";
 
 export default function BookingPage({
@@ -8,7 +9,9 @@ export default function BookingPage({
 }) {
   return (
     <div className="h-[var(--tg-viewport-height,100vh)] bg-[var(--tg-theme-bg-color)]">
-      <WindowControlsBar label="TeleZapys Booking" />
+      <Suspense fallback={null}>
+        <WindowControlsBar label="TeleZapys Booking" />
+      </Suspense>
       <div className="mx-auto flex w-full max-w-md flex-col gap-5 px-4 pb-10 pt-[calc(var(--app-header-height)+env(safe-area-inset-top,0px)+8px)]">
         <span className="text-xs uppercase tracking-[0.3em] text-[var(--tg-theme-hint-color)]">
           Self-booking

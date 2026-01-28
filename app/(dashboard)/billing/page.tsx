@@ -1,18 +1,10 @@
 import BillingClient from "./BillingClient";
 
-const getEnv = (key: string) => {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`Missing env var: ${key}`);
-  }
-  return value;
-};
-
 export default function BillingPage() {
+  const priceIdPro = process.env.STRIPE_PRICE_ID_PRO ?? "";
+  const priceIdElite = process.env.STRIPE_PRICE_ID_ELITE ?? "";
+
   return (
-    <BillingClient
-      priceIdPro={getEnv("STRIPE_PRICE_ID_PRO")}
-      priceIdElite={getEnv("STRIPE_PRICE_ID_ELITE")}
-    />
+    <BillingClient priceIdPro={priceIdPro} priceIdElite={priceIdElite} />
   );
 }

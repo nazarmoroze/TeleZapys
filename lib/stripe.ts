@@ -1,13 +1,11 @@
 import Stripe from "stripe";
 
-const getEnv = (key: string) => {
-  const value = process.env[key];
+export const createStripeClient = () => {
+  const value = process.env.STRIPE_SECRET_KEY;
   if (!value) {
-    throw new Error(`Missing env var: ${key}`);
+    throw new Error("Missing env var: STRIPE_SECRET_KEY");
   }
-  return value;
+  return new Stripe(value, {
+    apiVersion: "2025-12-15.clover",
+  });
 };
-
-export const stripe = new Stripe(getEnv("STRIPE_SECRET_KEY"), {
-  apiVersion: "2024-11-20",
-});

@@ -1,20 +1,24 @@
 const textEncoder = new TextEncoder();
 
-const toHex = (buffer: ArrayBuffer) =>
-  Array.from(new Uint8Array(buffer))
+const toHex = (buffer: ArrayBuffer | Uint8Array) =>
+  Array.from(buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 
 const hmacSha256 = async (key: Uint8Array, message: Uint8Array) => {
   const cryptoKey = await crypto.subtle.importKey(
     "raw",
-    key,
+    new Uint8Array(key),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"]
   );
 
-  const signature = await crypto.subtle.sign("HMAC", cryptoKey, message);
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    cryptoKey,
+    new Uint8Array(message)
+  );
   return new Uint8Array(signature);
 };
 

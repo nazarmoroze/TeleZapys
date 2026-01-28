@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { createStripeClient } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase-server";
 
 export async function POST(request: Request) {
+  const stripe = createStripeClient();
   const { userId } = (await request.json()) as { userId?: string };
 
   if (!userId) {

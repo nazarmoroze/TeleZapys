@@ -9,22 +9,27 @@ const getEnv = (key: string) => {
   return value;
 };
 
-const stripe = new Stripe(getEnv("STRIPE_SECRET_KEY"), {
-  apiVersion: "2025-12-15.clover",
-});
-
-const supabase = createClient(
-  getEnv("NEXT_PUBLIC_SUPABASE_URL"),
-  getEnv("SUPABASE_SERVICE_ROLE_KEY"),
-  { auth: { persistSession: false } }
-);
-
 const resolveTier = (subscription: Stripe.Subscription) => {
   const price = subscription.items.data[0]?.price;
   return price?.lookup_key || price?.metadata?.tier || "free";
 };
 
+const createStripeClient = () =>
+  new Stripe(getEnv("STRIPE_SECRET_KEY"), {
+    apiVersion: "2025-12-15.clover",
+  });
+
+const createSupabaseAdmin = () =>
+  createClient(
+    getEnv("NEXT_PUBLIC_SUPABASE_URL"),
+    getEnv("SUPABASE_SERVICE_ROLE_KEY"),
+    { auth: { persistSession: false } }
+  );
+
 export async function POST(request: Request) {
+  const stripe = createStripeClient();
+  const supabase = createSupabaseAdmin();
+
   const signature = request.headers.get("stripe-signature");
   if (!signature) {
     return new Response("Missing stripe-signature header", { status: 400 });
