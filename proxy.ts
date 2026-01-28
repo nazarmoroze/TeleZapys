@@ -4,6 +4,7 @@ import { validateTelegramWebAppData } from "@/lib/telegram";
 const EXCLUDED_PATH_PREFIXES = [
   "/_next",
   "/favicon.ico",
+  "/telezapys-logo.svg",
   "/api/webhooks/stripe",
 ];
 
@@ -72,5 +73,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|webp|gif|ico)$).*)",
+  ],
 };
