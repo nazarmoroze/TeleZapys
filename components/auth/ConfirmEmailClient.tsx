@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase-browser";
@@ -18,7 +18,9 @@ type RegisterPayload = {
 export default function ConfirmEmailClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = useMemo(() => createBrowserClient(), []);
+  const [supabase, setSupabase] = useState<ReturnType<
+    typeof createBrowserClient
+  > | null>(null);
   const [isClientReady, setIsClientReady] = useState(false);
   const [otp, setOtp] = useState("");
   const [payload, setPayload] = useState<RegisterPayload | null>(null);
@@ -28,6 +30,7 @@ export default function ConfirmEmailClient() {
 
   useEffect(() => {
     setIsClientReady(true);
+    setSupabase(createBrowserClient());
     const raw = sessionStorage.getItem(REGISTER_PAYLOAD_KEY);
     if (!raw) return;
 
@@ -42,6 +45,11 @@ export default function ConfirmEmailClient() {
 
     if (!payload) {
       setError("Немає даних для підтвердження.");
+      return;
+    }
+
+    if (!supabase) {
+      setError("Ініціалізація. Спробуйте ще раз.");
       return;
     }
 
@@ -89,6 +97,12 @@ export default function ConfirmEmailClient() {
     setError(null);
     setSuccess(null);
     setIsLoading(true);
+
+    if (!supabase) {
+      setError("Ініціалізація. Спробуйте ще раз.");
+      setIsLoading(false);
+      return;
+    }
 
     const { error: resendError } = await supabase.auth.signInWithOtp({
       email: payload.email,
@@ -176,4 +190,3 @@ export default function ConfirmEmailClient() {
     </div>
   );
 }
-

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
@@ -9,16 +9,28 @@ import { createBrowserClient } from "@/lib/supabase-browser";
 
 export default function LoginPage() {
   const router = useRouter();
-  const supabase = useMemo(() => createBrowserClient(), []);
+  const [supabase, setSupabase] = useState<ReturnType<
+    typeof createBrowserClient
+  > | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    setSupabase(createBrowserClient());
+  }, []);
+
   const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     setIsLoading(true);
+
+    if (!supabase) {
+      setError("Ініціалізація. Спробуйте ще раз.");
+      setIsLoading(false);
+      return;
+    }
 
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email,

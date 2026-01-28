@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
@@ -11,7 +11,9 @@ const REGISTER_PAYLOAD_KEY = "telezapys_register_payload";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const supabase = useMemo(() => createBrowserClient(), []);
+  const [supabase, setSupabase] = useState<ReturnType<
+    typeof createBrowserClient
+  > | null>(null);
   const [fullName, setFullName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [phone, setPhone] = useState("");
@@ -21,11 +23,21 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    setSupabase(createBrowserClient());
+  }, []);
+
   const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     setSuccess(null);
     setIsLoading(true);
+
+    if (!supabase) {
+      setError("Ініціалізація. Спробуйте ще раз.");
+      setIsLoading(false);
+      return;
+    }
 
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email,
