@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
@@ -26,7 +25,7 @@ const resolveTier = (subscription: Stripe.Subscription) => {
 };
 
 export async function POST(request: Request) {
-  const signature = headers().get("stripe-signature");
+  const signature = request.headers.get("stripe-signature");
   if (!signature) {
     return new Response("Missing stripe-signature header", { status: 400 });
   }
