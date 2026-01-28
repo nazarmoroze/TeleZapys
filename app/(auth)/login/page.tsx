@@ -16,9 +16,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTelegramReady, setIsTelegramReady] = useState(false);
 
   useEffect(() => {
     setSupabase(createBrowserClient());
+    setIsTelegramReady(Boolean(window.Telegram?.WebApp?.initData));
   }, []);
 
   const handleEmailLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,6 +45,13 @@ export default function LoginPage() {
       return;
     }
 
+    router.push("/home");
+  };
+
+  const handleTelegramLogin = () => {
+    const webApp = window.Telegram?.WebApp;
+    if (!webApp?.initData) return;
+    webApp.HapticFeedback?.impactOccurred("light");
     router.push("/home");
   };
 
@@ -108,8 +117,9 @@ export default function LoginPage() {
           </button>
           <button
             type="button"
-            disabled
-            className="inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white/70 px-5 text-base font-semibold text-[var(--tg-theme-text-color)] opacity-60"
+            onClick={handleTelegramLogin}
+            disabled={!isTelegramReady}
+            className="inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-5 text-base font-semibold text-[var(--tg-theme-text-color)] disabled:opacity-70"
           >
             <SiTelegram className="h-5 w-5 text-[#229ED9]" />
             Увійти через Telegram
